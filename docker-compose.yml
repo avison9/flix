@@ -1,0 +1,52 @@
+ version: '3'
+
+
+ networks:
+  kafkas:
+    name: kafkas
+
+ services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    networks:
+      - kafkas
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    ports:
+      - '9092:9092'
+    networks:
+      - kafkas
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "input-topic:1:1, output-topic:1:1"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  producer:
+    build: .
+    depends_on:
+      - kafka
+    command: python producer/producer.py
+    ports:
+      - "5001:5001"
+    networks:
+      - kafkas
+
+  consumer:
+    build: .
+    depends_on:
+      - kafka
+      - producer
+    command : python consumer/consumer.py
+    ports: 
+      - "5002:5002"
+    networks:
+      - kafkas
