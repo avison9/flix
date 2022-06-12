@@ -66,3 +66,9 @@ If you do not have "make" installed, please run the following command from your 
 
 #### Reading the malformed data
 The malformed data are passed into a list and the producer worker consume and publish it to the topic from the already specified list.
+
+#### Screenshots
+
+|  List of malformed data in input-topic | ![](https://github.com/avison9/flix/blob/master/screenshot/input.png?raw=true) |
+|  List of malformed data in output-topic | ![](https://github.com/avison9/flix/blob/master/screenshot/output.png?raw=true) |
+
